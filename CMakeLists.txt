@@ -1,17 +1,22 @@
 cmake_minimum_required(VERSION 3.16)
-project(example)
+
+# Set project name and version
+project(quad_mesh VERSION 1.0)
+
 
 list(PREPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # Libigl
 include(libigl)
+# FetchContent from github
+include(FetchContent)
 
 # Enable the target igl::glfw
 igl_include(glfw)
 # Other modules you could enable
 #igl_include(embree)
 #igl_include(imgui)
-#igl_include(opengl)
+igl_include(opengl)
 #igl_include(stb)
 #igl_include(predicates)
 #igl_include(xml)
@@ -24,6 +29,14 @@ igl_include(glfw)
 #igl_include(restricted mosek)
 #igl_include(restricted triangle)
 
+FetchContent_Declare(
+   polyscope
+   GIT_REPOSITORY https://github.com/nmwsharp/polyscope.git
+   GIT_TAG        master
+)
+
+FetchContent_MakeAvailable(polyscope)
+
 # Add your project files
 file(GLOB SRC_FILES *.cpp)
 add_executable(${PROJECT_NAME} ${SRC_FILES})
@@ -34,7 +47,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   ## Other modules you could link to
   # igl::embree
   # igl::imgui
-  # igl::opengl
+  igl::opengl
   # igl::stb
   # igl::predicates
   # igl::xml
@@ -47,3 +60,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   # igl_restricted::mosek
   # igl_restricted::triangle
   )
+
+# Link against Polyscope
+target_link_libraries(${PROJECT_NAME} PUBLIC polyscope)
